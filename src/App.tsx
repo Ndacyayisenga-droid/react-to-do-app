@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import InputField from "./components/InputField";
 import TodoList from "./components/TodoList";
@@ -9,6 +9,26 @@ const App: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Array<Todo>>([]);
   const [CompletedTodos, setCompletedTodos] = useState<Array<Todo>>([]);
+
+  // Load todos from localStorage when the component mounts
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("todos");
+    const savedCompletedTodos = localStorage.getItem("completedTodos");
+
+    if (savedTodos) {
+      setTodos(JSON.parse(savedTodos));
+    }
+
+    if (savedCompletedTodos) {
+      setCompletedTodos(JSON.parse(savedCompletedTodos));
+    }
+  }, []);
+
+  // Save todos to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("completedTodos", JSON.stringify(CompletedTodos));
+  }, [todos, CompletedTodos]);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
